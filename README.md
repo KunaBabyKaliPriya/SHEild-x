@@ -1,4 +1,74 @@
+# SHEild-X
+Women's safety navigation app with risk-based safe routing .
+
+## Problem Statement
+
+In India, 51% of women report feeling unsafe while traveling alone, with 95% stating that safety concerns affect their mobility choices (Source: ActionAid Survey). Traditional navigation applications like Google Maps optimize for distance or time, completely disregarding safety parameters that matter most to women travelers.
+
+**The Problem:**
+- Women often avoid well-lit main roads at night due to lack of information about safer alternatives
+- GPS applications suggest shortcuts through isolated lanes without warning about potential risks
+- No integration of crime statistics or accident data in route planning
+- Emergency services are multiple clicks away during crisis situations
+- Lack of community feedback on route safety
+
+**The Impact:**
+- Restricted mobility and independence for women
+- Limited career and education opportunities due to travel fears
+- Anxiety and stress during everyday commutes
+- Delayed emergency response in crisis situations
+
 ---
+
+### How We Have Implemented SHEild-X
+
+**1. Road Network Extraction**
+We use OpenStreetMap data accessed through the OSMnx library to download real road networks. For demonstration purposes, we have focused on Coimbatore, India, extracting all drivable roads, intersections, and road attributes.
+
+**2. Risk Assignment Based on Road Type**
+Each road segment is assigned a base risk score according to its classification:
+- Primary roads and highways: Low risk (0.2)
+- Residential roads: Medium risk (0.5)
+- Service roads and alleys: High risk (0.7)
+
+**3. Simulated Incident Data**
+Since real government incident data requires API access, we have created sample incident data for Coimbatore locations including Gandhipuram, RS Puram, and Town Hall. Each incident has a severity score (0.4 to 0.9) that adds risk to nearby roads.
+
+**4. Time-Dependent Risk Adjustment**
+The system checks the current time and applies risk multipliers:
+- Night hours (after 9 PM): Risk increased by 1.4x
+- This simulates how darkness and reduced crowd affect safety
+
+**5. Risk Propagation**
+Risk spreads to neighboring roads through graph diffusion, ensuring that areas near high-risk zones are also appropriately weighted.
+
+**6. Path Finding Algorithm**
+We use NetworkX's shortest path implementation with a custom weight function:
+Total Cost = (0.7 × Risk) + (0.3 × Distance)
+
+text
+This prioritizes safety while still considering reasonable travel distance.
+
+**7. Safe Haven Integration**
+Police stations and hospitals are extracted from OpenStreetMap and displayed as markers on the map. Routes can be adjusted to stay near these safe locations.
+
+**8. Interactive Frontend**
+The application features:
+- A React-based user interface
+- Leaflet map integration showing roads and routes
+- Search functionality for locations
+- Visual display of the safest route in red
+- Distance and estimated time display
+- SOS emergency button for one-click calling to police (100)
+
+### Current Limitations
+- Users must manually download a city before exploring
+- Incident data is simulated rather than from government sources
+- No user rating system implemented yet
+- Voice guidance not currently available
+
+Our current implementation demonstrates the core concept of safety-first routing, providing a foundation for future enhancements with real data sources and community features.
+
 
 ## Technology Stack
 
@@ -84,51 +154,4 @@ source venv/bin/activate
 pip install -r backend/requirements.txt
 
 # Start backend server
-python backend/app.py **### How We Have Implemented SHEild-X
-
-**1. Road Network Extraction**
-We use OpenStreetMap data accessed through the OSMnx library to download real road networks. For demonstration purposes, we have focused on Coimbatore, India, extracting all drivable roads, intersections, and road attributes.
-
-**2. Risk Assignment Based on Road Type**
-Each road segment is assigned a base risk score according to its classification:
-- Primary roads and highways: Low risk (0.2)
-- Residential roads: Medium risk (0.5)
-- Service roads and alleys: High risk (0.7)
-
-**3. Simulated Incident Data**
-Since real government incident data requires API access, we have created sample incident data for Coimbatore locations including Gandhipuram, RS Puram, and Town Hall. Each incident has a severity score (0.4 to 0.9) that adds risk to nearby roads.
-
-**4. Time-Dependent Risk Adjustment**
-The system checks the current time and applies risk multipliers:
-- Night hours (after 9 PM): Risk increased by 1.4x
-- This simulates how darkness and reduced crowd affect safety
-
-**5. Risk Propagation**
-Risk spreads to neighboring roads through graph diffusion, ensuring that areas near high-risk zones are also appropriately weighted.
-
-**6. Path Finding Algorithm**
-We use NetworkX's shortest path implementation with a custom weight function:
-Total Cost = (0.7 × Risk) + (0.3 × Distance)
-
-text
-This prioritizes safety while still considering reasonable travel distance.
-
-**7. Safe Haven Integration**
-Police stations and hospitals are extracted from OpenStreetMap and displayed as markers on the map. Routes can be adjusted to stay near these safe locations.
-
-**8. Interactive Frontend**
-The application features:
-- A React-based user interface
-- Leaflet map integration showing roads and routes
-- Search functionality for locations
-- Visual display of the safest route in red
-- Distance and estimated time display
-- SOS emergency button for one-click calling to police (100)
-
-### Current Limitations
-- Users must manually download a city before exploring
-- Incident data is simulated rather than from government sources
-- No user rating system implemented yet
-- Voice guidance not currently available
-
-Our current implementation demonstrates the core concept of safety-first routing, providing a foundation for future enhancements with real data sources and community features.
+python backend/app.py
